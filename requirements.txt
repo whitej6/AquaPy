@@ -1,0 +1,7 @@
+django==3.0.*
+djangorestframework==3.11.*
+readwise-django-rq-scheduler==1.2.*
+gunicorn==20.0.*
+whitenoise==5.0.*
+psycopg2==2.7.*
+requests==2.24.*

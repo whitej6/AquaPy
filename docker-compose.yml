@@ -1,0 +1,91 @@
+  
+version: '3'
+
+services:
+
+  web:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: aquapy_django
+    env_file: aquapy.env
+    ports:
+      - "8000:8000"
+    tty: True
+    command: |
+      sh -c "python manage.py migrate --noinput && \
+             gunicorn -c gunicorn.py aquapy.wsgi"
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - influxdb
+      - redis
+    devices:
+      - /dev/i2c-1:/dev/i2c-1
+
+  worker:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: aquapy_django
+    env_file: aquapy.env
+    tty: True
+    command: python manage.py rqworker
+    restart: unless-stopped
+    depends_on:
+      - web
+    devices:
+      - /dev/i2c-1:/dev/i2c-1
+
+  scheduler:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: aquapy_django
+    env_file: aquapy.env
+    tty: True
+    command: python manage.py rqscheduler
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:11
+    env_file: aquapy.env
+    restart: unless-stopped
+    volumes:
+      - postgres_vol:/var/lib/postgresql/data
+
+  influxdb:
+    image: influxdb:latest
+    env_file: aquapy.env
+    restart: unless-stopped
+    volumes:
+      - influxdb_vol:/var/lib/influxdb
+      - ./init-influxdb.sh:/docker-entrypoint-initdb.d/init-influxdb.sh
+
+  grafana:
+    image: grafana/grafana:latest
+    env_file: aquapy.env
+    restart: unless-stopped
+    depends_on:
+      - influxdb
+    ports:
+      - "80:3000"
+    volumes:
+      - grafana_vol:/var/lib/grafana
+
+  redis:
+    image: redis:5-alpine
+    command:
+      - sh
+      - -c # this is to evaluate the $REDIS_PASSWORD from the env
+      - redis-server --appendonly yes --requirepass $$REDIS_PASSWORD ## $$ because of docker-compose
+    env_file: aquapy.env
+    restart: unless-stopped
+
+volumes:
+  grafana_vol:
+  influxdb_vol:
+  postgres_vol:

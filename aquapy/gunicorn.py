@@ -1,0 +1,9 @@
+command = '/usr/bin/gunicorn'
+pythonpath = '/opt/aquapy'
+bind = '0.0.0.0:8000'
+workers = 2
+threads = 2
+errorlog = '-'
+accesslog = '-'
+capture_output = False
+loglevel = 'debug'
