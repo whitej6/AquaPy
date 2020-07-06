@@ -94,12 +94,12 @@ services:
     image: grafana/grafana:latest
     env_file: aquapy.env
     restart: unless-stopped
+    user: root
     depends_on:
       - influxdb
-    ports:
-      - "80:3000"
     volumes:
       - grafana_vol:/var/lib/grafana
+      - ./grafana.ini:/etc/grafana/grafana.ini
     network_mode: host
     extra_hosts:
       - "influxdb:127.0.0.1"
