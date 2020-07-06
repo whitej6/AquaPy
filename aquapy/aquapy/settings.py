@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # Custom Apps
     'aquapy',
     'monitor',
+    'power',
 ]
 
 MIDDLEWARE = [

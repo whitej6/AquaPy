@@ -5,3 +5,4 @@ gunicorn==20.0.*
 whitenoise==5.0.*
 psycopg2==2.7.*
 requests==2.24.*
+pywemo==0.4.*

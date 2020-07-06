@@ -22,6 +22,11 @@ services:
       - redis
     devices:
       - /dev/i2c-1:/dev/i2c-1
+    network_mode: host
+    extra_hosts:
+      - "influxdb:127.0.0.1"
+      - "postgres:127.0.0.1"
+      - "redis:127.0.0.1"
 
   worker:
     build:
@@ -36,6 +41,11 @@ services:
       - web
     devices:
       - /dev/i2c-1:/dev/i2c-1
+    network_mode: host
+    extra_hosts:
+      - "influxdb:127.0.0.1"
+      - "postgres:127.0.0.1"
+      - "redis:127.0.0.1"
 
   scheduler:
     build:
@@ -49,6 +59,11 @@ services:
     depends_on:
       - postgres
       - redis
+    network_mode: host
+    extra_hosts:
+      - "influxdb:127.0.0.1"
+      - "postgres:127.0.0.1"
+      - "redis:127.0.0.1"
 
   postgres:
     image: postgres:11
@@ -56,6 +71,11 @@ services:
     restart: unless-stopped
     volumes:
       - postgres_vol:/var/lib/postgresql/data
+    network_mode: host
+    extra_hosts:
+      - "influxdb:127.0.0.1"
+      - "postgres:127.0.0.1"
+      - "redis:127.0.0.1"
 
   influxdb:
     image: influxdb:latest
@@ -64,6 +84,11 @@ services:
     volumes:
       - influxdb_vol:/var/lib/influxdb
       - ./init-influxdb.sh:/docker-entrypoint-initdb.d/init-influxdb.sh
+    network_mode: host
+    extra_hosts:
+      - "influxdb:127.0.0.1"
+      - "postgres:127.0.0.1"
+      - "redis:127.0.0.1"
 
   grafana:
     image: grafana/grafana:latest
@@ -75,6 +100,11 @@ services:
       - "80:3000"
     volumes:
       - grafana_vol:/var/lib/grafana
+    network_mode: host
+    extra_hosts:
+      - "influxdb:127.0.0.1"
+      - "postgres:127.0.0.1"
+      - "redis:127.0.0.1"
 
   redis:
     image: redis:5-alpine
@@ -84,6 +114,11 @@ services:
       - redis-server --appendonly yes --requirepass $$REDIS_PASSWORD ## $$ because of docker-compose
     env_file: aquapy.env
     restart: unless-stopped
+    network_mode: host
+    extra_hosts:
+      - "influxdb:127.0.0.1"
+      - "postgres:127.0.0.1"
+      - "redis:127.0.0.1"
 
 volumes:
   grafana_vol:
