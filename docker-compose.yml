@@ -115,6 +115,8 @@ services:
     env_file: aquapy.env
     restart: unless-stopped
     network_mode: host
+    volumes:
+      - redis_vol:/data
     extra_hosts:
       - "influxdb:127.0.0.1"
       - "postgres:127.0.0.1"
@@ -124,3 +126,4 @@ volumes:
   grafana_vol:
   influxdb_vol:
   postgres_vol:
+  redis_vol:

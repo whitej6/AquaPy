@@ -1,6 +1,6 @@
 import os
 
-from django_rq import job
+from django_rq import job, get_queue
 import requests
 from requests.auth import HTTPBasicAuth
 
@@ -29,3 +29,6 @@ def query_sensors():
             print(r.status_code)
             print(r.json())
             raise ValueError('Job Failed')
+
+        redis_queue = get_queue('default')
+        redis_queue.enqueue('controller.worker.i2c_action', job.id, value)

@@ -22,6 +22,8 @@ from .views import redirect_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/monitor/', include('monitor.urls')),
+    path('api/power/', include('power.urls')),
+    path('api/controller/', include('controller.urls')),
     path('django-rq/', include('django_rq.urls')),
     path('', redirect_view),
 ]
